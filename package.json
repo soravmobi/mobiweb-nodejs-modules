@@ -37,5 +37,8 @@
     "request": "^2.81.0",
     "uniqid": "^4.1.1"
   },
-  "homepage": "https://github.com/soravmobi/mobiweb-nodejs-modules#readme"
+  "homepage": "https://github.com/soravmobi/mobiweb-nodejs-modules#readme",
+  "directories": {
+    "lib": "lib"
+  }
 }
