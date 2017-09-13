@@ -21,12 +21,6 @@ var appConstant = function () {
 	this.apns_cert_file = "conf/cert.pem";  
 	this.apns_sound     = "default";  
 
-	/* Database */
-	this.host     = "localhost";
-	this.username = "root";
-	this.password = "root";
-	this.database = "quick-love";
-
 	/* Messages */
 	this.general_error = 'Some error occured, please try again.';
 

@@ -7,6 +7,8 @@
 */
 
 var mysql    = require('mysql'),
+	appRoot  = require('app-root-path'),
+	settings = require(appRoot + '/db.json'),
 	appConst = require('./Constant.js');
 
 class Database {
@@ -14,13 +16,7 @@ class Database {
 	/* Constructor To Define Database Connection */
 	constructor() {
 		this.MsgDb = null;
-		this.pool = mysql.createPool({
-			host: appConst.host,
-			user: appConst.username,
-			password: appConst.password,
-			database: appConst.database,
-			multipleStatements: true,
-		});
+		this.pool = mysql.createPool(settings);
 	}
 
 	/**
