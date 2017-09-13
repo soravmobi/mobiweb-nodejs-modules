@@ -8,8 +8,7 @@
 
 var mysql    = require('mysql'),
 	appRoot  = require('app-root-path'),
-	settings = require(appRoot + '/db.json'),
-	appConst = require('./Constant.js');
+	settings = require(appRoot + '/db.json');
 
 class Database {
 
