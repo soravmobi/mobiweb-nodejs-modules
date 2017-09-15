@@ -1,8 +1,8 @@
 # Mobiweb Node.Js Modules  
-(https://www.mobiwebtech.com/)  
+[![](https://badge.fury.io/js/ip.svg)](https://www.mobiwebtech.com/)  
 
 Mobiweb basic modules utilities for node.js
-(https://www.npmjs.com/package/mobiweb-nodejs-modules)  
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/mobiweb-nodejs-modules)  
 
 ## Installation
 
