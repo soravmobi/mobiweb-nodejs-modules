@@ -1,8 +1,7 @@
 # Mobiweb Node.Js Modules  
-[![](https://badge.fury.io/js/ip.svg)](https://www.mobiwebtech.com/)  
+[![](https://www.mobiwebtech.com/wp-content/themes/mobiweb/images/mobinew.png)](https://www.mobiwebtech.com/)  
 
 Mobiweb basic modules utilities for node.js
-[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/mobiweb-nodejs-modules)  
 
 ## Installation
 
@@ -15,6 +14,12 @@ npm install mobiweb-nodejs-modules
 
 ```shell
 git clone https://github.com/soravmobi/mobiweb-nodejs-modules.git
+```
+
+### npmjs
+
+```shell
+https://www.npmjs.com/package/mobiweb-nodejs-modules
 ```
 
 ## Usage
