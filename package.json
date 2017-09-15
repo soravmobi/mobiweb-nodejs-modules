@@ -37,7 +37,8 @@
     "mysql": "^2.14.1",
     "request": "^2.81.0",
     "uniqid": "^4.1.1",
-    "node-querybuilder": "^1.0.3"
+    "node-querybuilder": "^1.0.3",
+    "moment": "^2.18.1"
   },
   "homepage": "https://github.com/soravmobi/mobiweb-nodejs-modules#readme",
   "directories": {
