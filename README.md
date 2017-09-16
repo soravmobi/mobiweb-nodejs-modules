@@ -27,5 +27,25 @@ Basic modules like user signup, verify account, login, social login, frogot pass
 
 ```js
 var mobiweb = require('mobiweb-nodejs-modules');
+```
+
+### For Signup
+
+```js
+app.post('/user/signup', function (req,res) {
+    mobiweb.userSignup(req,res);
+});
 
 
+/* Required Parameters */
+userFirstName
+userLastName
+userEmail
+userPassword
+userGender
+userDOB
+userDeviceToken
+userDeviceType
+userDeviceId
+
+```
