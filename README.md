@@ -39,14 +39,16 @@ app.post('/user/signup', function (req,res) {
 
 #### Required Parameters
 
-* userFirstName - [FIRST NAME]
-* userLastName - [LAST NAMEW	]
-* userEmail - [UNIQUE EMAIL ID]
-* userPassword - [ALPHA NUMERIC & 1 SPECIAL CHARACTER LIKE - Mobiweb@123]
-* userGender - [MALE,FEMALE,OTHER]
-* userDOB - [Y-M-D Format]
+* userFirstName   - [FIRST NAME]
+* userLastName    - [LAST NAME]
+* userEmail       - [UNIQUE EMAIL ID]
+* userPassword    - [MD5 - ALPHA NUMERIC & 1 SPECIAL CHARACTER LIKE - Mobiweb@123]
+* userGender      - [MALE,FEMALE,OTHER]
+* userDOB         - [Y-M-D Format]
 * userDeviceToken - [USER DEVICE TOKEN]
-* userDeviceType - [ANDROID,IOS]
-* userDeviceId - [UNIQUE DEVICE ID]
+* userDeviceType  - [ANDROID,IOS]
+* userDeviceId    - [UNIQUE DEVICE ID]
+
+#### Note:- A temporary verification code will send on registered email id.
 
 ```
