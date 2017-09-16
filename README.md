@@ -52,3 +52,22 @@ app.post('/user/signup', function (req,res) {
 #### Note:- A temporary verification code will send on registered email id.
 
 ```
+
+### For Login
+
+```js
+app.post('/user/login', function (req,res) {
+    mobiweb.userLogin(req,res);
+});
+
+
+#### Required Parameters
+
+* userEmail       - [UNIQUE EMAIL ID]
+* userPassword    - [MD5 - ALPHA NUMERIC & 1 SPECIAL CHARACTER LIKE - Mobiweb@123]
+* userDeviceToken - [USER DEVICE TOKEN]
+* userDeviceType  - [ANDROID,IOS]
+* userDeviceId    - [UNIQUE DEVICE ID]
+
+
+```
