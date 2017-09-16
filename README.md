@@ -37,15 +37,16 @@ app.post('/user/signup', function (req,res) {
 });
 
 
-/* Required Parameters */
-userFirstName
-userLastName
-userEmail
-userPassword
-userGender
-userDOB
-userDeviceToken
-userDeviceType
-userDeviceId
+#### Required Parameters
+
+* userFirstName - [FIRST NAME]
+* userLastName - [LAST NAMEW	]
+* userEmail - [UNIQUE EMAIL ID]
+* userPassword - [ALPHA NUMERIC & 1 SPECIAL CHARACTER LIKE - Mobiweb@123]
+* userGender - [MALE,FEMALE,OTHER]
+* userDOB - [Y-M-D Format]
+* userDeviceToken - [USER DEVICE TOKEN]
+* userDeviceType - [ANDROID,IOS]
+* userDeviceId - [UNIQUE DEVICE ID]
 
 ```
