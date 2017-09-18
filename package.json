@@ -1,6 +1,6 @@
 {
   "name": "mobiweb-nodejs-modules",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Basic Node Js Modules",
   "main": "index.js",
   "scripts": {
