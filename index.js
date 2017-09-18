@@ -10,8 +10,11 @@
  * Module dependencies.
 */
 
-module.exports = require('./lib/User');
-module.exports = require('./lib/UserProfile');
+module.exports = Object.assign(
+    {},
+    require('./lib/User'),
+    require('./lib/UserProfile'),
+);
 
 /* End of file index.js */
 /* Location: ./index.js */
