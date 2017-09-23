@@ -61,7 +61,6 @@ UserProfile.viewProfile = function(req, res) {
  * @param {string} userLastName
  * @param {string} userGender
  * @param {string} userDOB
- * @param {string} userSexualOrientation
  * @param {string} userCountry
  * @param {string} userCity
  * @param {string} userAddress
@@ -75,7 +74,6 @@ UserProfile.updateProfile = function(req, res) {
 	req.sanitize("userLastName").trim();
 	req.sanitize("userGender").trim();
 	req.sanitize("userDOB").trim();
-	req.sanitize("userSexualOrientation").trim();
 	req.sanitize("userCountry").trim();
 	req.sanitize("userCity").trim();
 	req.sanitize("userAddress").trim();
@@ -86,7 +84,6 @@ UserProfile.updateProfile = function(req, res) {
     req.check('userLastName', 'Enter last name').notEmpty();
     req.check('userGender', 'Select gender').inList(['MALE', 'FEMALE', 'OTHER']);
     req.check('userDOB', 'Select date of birth.').notEmpty();
-    req.check('userSexualOrientation', 'Enter sexual orientation').notEmpty();
     req.check('userCountry', 'Enter country name').notEmpty();
     req.check('userCity', 'Enter city name').notEmpty();
     req.check('userAddress', 'Enter address').notEmpty();
@@ -106,7 +103,6 @@ UserProfile.updateProfile = function(req, res) {
 		let userLastName          = req.sanitize('userLastName').escape().trim();
 		let userGender            = req.sanitize('userGender').escape().trim();
 		let userDOB               = req.sanitize('userDOB').escape().trim();
-		let userSexualOrientation = req.sanitize('userSexualOrientation').escape().trim();
 		let userCountry           = req.sanitize('userCountry').escape().trim();
 		let userCity              = req.sanitize('userCity').escape().trim();
 		let userAddress           = req.sanitize('userAddress').escape().trim();
@@ -125,13 +121,11 @@ UserProfile.updateProfile = function(req, res) {
 	            dataObj.userLastName = userLastName;
 	            dataObj.userGender = userGender;
 	            dataObj.userDOB = userDOB;
-	            dataObj.userSexualOrientation = userSexualOrientation;
 	            dataObj.userCountry = userCountry;
 	            dataObj.userCity = userCity;
 	            dataObj.userAddress = userAddress;
 	            dataObj.userLatitude = userLatitude;
 	            dataObj.userLongitude = userLongitude;
-	            dataObj.userProfileUpdateStatus = 1;
 	            model.updateData(function(err,resp){
 	                if(err){
 	                    res.send(custom.dbErrorResponse());

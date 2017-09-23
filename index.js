@@ -12,8 +12,8 @@
 
 module.exports = Object.assign(
     {},
-    require('./lib/User'),
-    require('./lib/UserProfile'),
+    require('./controllers/User'),
+    require('./controllers/UserProfile'),
 );
 
 /* End of file index.js */
