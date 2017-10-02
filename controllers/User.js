@@ -64,6 +64,31 @@ User.userSignup = function(req, res) {
         /* To get user email */
         let userEmail   = req.sanitize('userEmail').escape().trim();
         let getTempCode = constant.temp_code;
+        let userDOB     = req.sanitize('userDOB').escape().trim();
+        let isValidDate = custom.validateDateTime(userDOB,'YYYY-MM-DD');
+        
+        /* Validate date of birth format */
+        if(!isValidDate){
+            return res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": 'Invalid Date of birth format, should be (YYYY-MM-DD)'
+                    });
+        }
+
+        /* Get age from date of birth */
+        let moment     = require('moment');
+        let getUserAge = parseInt(moment().diff(userDOB, 'years'));
+        if(getUserAge < parseInt(constant.min_age_limit))
+        {
+            return res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": 'Your age must be '+constant.min_age_limit+' years old.'
+                    });
+        }
 
         /* Check Unique Email Id */
         database.getConn('SELECT * FROM ' + constant.users + ' WHERE userEmail = "' + userEmail + '"', function(err, rows) {
@@ -132,7 +157,7 @@ User.userSignup = function(req, res) {
                                 var userLoginSessionKey = masterUserId + custom.getGuid();
 
                                 /* Insert user details data */
-                                let user_details_query = "INSERT INTO " + constant.user_details + " (userId,userFirstName,userLastName,userDOB,userGender,userLoginSessionKey,userRegistrationDate,userLastIpAddress,userTempCode,userTempCodeSentTime) VALUES ('" + masterUserId + "','" + user_data.userFirstName + "','" + user_data.userLastName + "','" + user_data.userDOB + "','" + user_data.userGender + "','" + userLoginSessionKey + "','" + constant.current_time + "','" + custom.getUserIp() + "','" + getTempCode + "','" + constant.current_time + "')";
+                                let user_details_query = "INSERT INTO " + constant.user_details + " (userId,userFirstName,userLastName,userDOB,userGender,userLoginSessionKey,userRegistrationDate,userLastIpAddress,userTempCode,userTempCodeSentTime) VALUES ('" + masterUserId + "','" + user_data.userFirstName + "','" + user_data.userLastName + "','" + user_data.userDOB + "','" + user_data.userGender + "','" + userLoginSessionKey + "','" + custom.getCurrentTime() + "','" + custom.getUserIp() + "','" + getTempCode + "','" + custom.getCurrentTime() + "')";
                                 connection.query(user_details_query, function(err, result) {
                                     if (err) {
                                         connection.rollback(function() {
@@ -162,9 +187,9 @@ User.userSignup = function(req, res) {
                                             });
                                         } else {
                                             if (result != '') {
-                                                var user_device_query = "UPDATE " + constant.users_device_history + " SET userId = " + masterUserId + " ,userDeviceToken='" + user_data.userDeviceToken + "' ,userDeviceType='" + user_data.userDeviceType + "' ,deviceModifiedDate='" + constant.current_time + "'";
+                                                var user_device_query = "UPDATE " + constant.users_device_history + " SET userId = " + masterUserId + " ,userDeviceToken='" + user_data.userDeviceToken + "' ,userDeviceType='" + user_data.userDeviceType + "' ,deviceModifiedDate='" + custom.getCurrentTime() + "'";
                                             } else {
-                                                var user_device_query = "INSERT INTO " + constant.users_device_history + " (userId,userDeviceToken,userDeviceType,userDeviceId,deviceAddedDate,deviceModifiedDate) VALUES ('" + masterUserId + "','" + user_data.userDeviceToken + "','" + user_data.userDeviceType + "','" + user_data.userDeviceId + "','" + constant.current_time + "','" + constant.current_time + "')";
+                                                var user_device_query = "INSERT INTO " + constant.users_device_history + " (userId,userDeviceToken,userDeviceType,userDeviceId,deviceAddedDate,deviceModifiedDate) VALUES ('" + masterUserId + "','" + user_data.userDeviceToken + "','" + user_data.userDeviceType + "','" + user_data.userDeviceId + "','" + custom.getCurrentTime() + "','" + custom.getCurrentTime() + "')";
                                             }
                                         }
                                         connection.query(user_device_query, function(err, result) {
@@ -353,7 +378,7 @@ User.userLogin = function(req, res) {
                     }
 
                     /* Update user details data */
-                    let user_details_query = "UPDATE " + constant.user_details + " SET userLastLogin = '"+constant.current_time+"' , userLastIpAddress = '"+custom.getUserIp()+ "' WHERE userId ="+masterUserId;
+                    let user_details_query = "UPDATE " + constant.user_details + " SET userLastLogin = '"+custom.getCurrentTime()+"' , userLastIpAddress = '"+custom.getUserIp()+ "' WHERE userId ="+masterUserId;
                     connection.query(user_details_query, function(err, result) {
                         if (err) {
                             connection.rollback(function() {
@@ -385,9 +410,9 @@ User.userLogin = function(req, res) {
                                 let userDeviceType  = req.sanitize('userDeviceType').escape().trim();
                                 let userDeviceToken = req.sanitize('userDeviceToken').escape().trim();
                                 if (result != '') {
-                                    var user_device_query = "UPDATE " + constant.users_device_history + " SET userId = " + masterUserId + " ,userDeviceToken='" + userDeviceToken + "' ,userDeviceType='" + userDeviceType + "' ,deviceModifiedDate='" + constant.current_time + "'";
+                                    var user_device_query = "UPDATE " + constant.users_device_history + " SET userId = " + masterUserId + " ,userDeviceToken='" + userDeviceToken + "' ,userDeviceType='" + userDeviceType + "' ,deviceModifiedDate='" + custom.getCurrentTime() + "'";
                                 } else {
-                                    var user_device_query = "INSERT INTO " + constant.users_device_history + " (userId,userDeviceToken,userDeviceType,userDeviceId,deviceAddedDate,deviceModifiedDate) VALUES ('" + masterUserId + "','" + userDeviceToken + "','" + userDeviceType + "','" + userDeviceId + "','" + constant.current_time + "','" + constant.current_time + "')";
+                                    var user_device_query = "INSERT INTO " + constant.users_device_history + " (userId,userDeviceToken,userDeviceType,userDeviceId,deviceAddedDate,deviceModifiedDate) VALUES ('" + masterUserId + "','" + userDeviceToken + "','" + userDeviceType + "','" + userDeviceId + "','" + custom.getCurrentTime() + "','" + custom.getCurrentTime() + "')";
                                 }
                             }
                             connection.query(user_device_query, function(err, result) {
@@ -604,7 +629,7 @@ User.resendAccountVerificationCode = function(req, res) {
                                 return false;
                             }else{
                                 let userLastTempCodeSentTime  = resp[0].userTempCodeSentTime;
-                                let currentTime  = constant.current_time;
+                                let currentTime  = custom.getCurrentTime();
                                 let timeDifferece = custom.getDateTimeDifference(userLastTempCodeSentTime,currentTime,'minutes');
                                 if(timeDifferece < constant.resend_code_limit){
                                     res.send({
@@ -644,7 +669,7 @@ User.resendAccountVerificationCode = function(req, res) {
                 /* Update user details */
                 var dataObj = {};
                 dataObj.userTempCode = getTempCode;
-                dataObj.userTempCodeSentTime = constant.current_time;
+                dataObj.userTempCodeSentTime = custom.getCurrentTime();
                 model.updateData(function(err,resp){
                     if(err){
                         res.send(custom.dbErrorResponse());
@@ -752,13 +777,21 @@ User.forgotPassword = function(req, res) {
                                     "message": constant.user_deactivated
                                 }); 
                                 return false;
+                            }else if(parseInt(resp[0].isSocialSignup) === 1){
+                                res.send({
+                                    "code": 200,
+                                    "response": {},
+                                    "status": 0,
+                                    "message": 'Social users can`t forgot password'
+                                }); 
+                                return false;
                             }else{
-                                let getTempCode = constant.temp_code;    
+                                let getTempCode = custom.generateRandomNo(6);    
 
                                 /* Update user details */
                                 var dataObj = {};
                                 dataObj.userTempCode = getTempCode;
-                                dataObj.userTempCodeSentTime = constant.current_time;
+                                dataObj.userTempCodeSentTime = custom.getCurrentTime();
                                 model.updateData(function(err,update_resp){
                                     if(err){
                                         res.send(custom.dbErrorResponse());
@@ -862,7 +895,7 @@ User.verifyForgotPasswordCode = function(req, res) {
                                                 return false;
                                             }else{
                                                 let userTempCodeSentTime  = code_results[0].userTempCodeSentTime;
-                                                let currentTime  = constant.current_time;
+                                                let currentTime  = custom.getCurrentTime();
                                                 let timeDifferece = custom.getDateTimeDifference(userTempCodeSentTime,currentTime,'minutes');
                                                 if(timeDifferece > constant.code_valid_time){
                                                     res.send({
@@ -1057,7 +1090,7 @@ User.resendForgotPasswordCode = function(req, res) {
                                 return false;
                             }else{
                                 let userLastTempCodeSentTime  = resp[0].userTempCodeSentTime;
-                                let currentTime  = constant.current_time;
+                                let currentTime  = custom.getCurrentTime();
                                 let timeDifferece = custom.getDateTimeDifference(userLastTempCodeSentTime,currentTime,'minutes');
                                 if(timeDifferece < constant.resend_code_limit){
                                     res.send({
@@ -1097,7 +1130,7 @@ User.resendForgotPasswordCode = function(req, res) {
                 /* Update user details */
                 var dataObj = {};
                 dataObj.userTempCode = getTempCode;
-                dataObj.userTempCodeSentTime = constant.current_time;
+                dataObj.userTempCodeSentTime = custom.getCurrentTime();
                 model.updateData(function(err,resp){
                     if(err){
                         res.send(custom.dbErrorResponse());
@@ -1188,7 +1221,6 @@ User.checkSocialLogin = function(req, res) {
     /* Manage all validations */
     req.sanitize("userSocialId").trim();
     req.sanitize("userSocialType").trim();
-    req.sanitize("userEmail").trim();
     req.sanitize("userDeviceToken").trim();
     req.sanitize("userDeviceType").trim();
     req.sanitize("userDeviceId").trim();
@@ -1196,8 +1228,6 @@ User.checkSocialLogin = function(req, res) {
     req.check('userSocialId', 'Required social id').notEmpty();
     req.check('userSocialType', 'Required social type').notEmpty();
     req.check('userSocialType', 'Select valid social type').inList(['FACEBOOK', 'TWITTER', 'INSTAGRAM']);
-    req.check('userEmail', 'Enter your email').notEmpty();
-    req.check('userEmail', 'Enter a valid email').isEmail();
     req.check('userDeviceToken', 'The user device token field is required').notEmpty();
     req.check('userDeviceType', 'The user device type field is required').notEmpty();
     req.check('userDeviceType', 'The user device type field must be one of ANDROID,IOS').inList(['ANDROID', 'IOS']);
@@ -1238,8 +1268,8 @@ User.checkSocialLogin = function(req, res) {
                             res.send({
                                 "code": 200,
                                 "response": {},
-                                "status": 0,
-                                "message": 'Social Id not found.'
+                                "status": 6,
+                                "message": 'Don`t have an account on '+constant.site_name+' , please follow next step to login.'
                             });
                             return;
                         }
@@ -1256,15 +1286,21 @@ User.checkSocialLogin = function(req, res) {
                         return false;
                     }else{
                         if(userDetails != ""){
-                            var masterUserId = userDetails[0].masterUserId;
-                            if(userDetails[0].userEmail == userEmail){
+                            var masterUserId   = userDetails[0].masterUserId;
+                            var checkUserEmail = '';
+                            if(userEmail){
+                                var checkUserEmail = userEmail;
+                            }else{
+                                var checkUserEmail = userDetails[0].userEmail;
+                            }
+                            if(userDetails[0].userEmail == checkUserEmail){
                                 if(parseInt(isSocialEmail) === 1){
-                                    callback(null,userDetails,masterUserId,1);
+                                    callback(null,userDetails,masterUserId,1,social_results,checkUserEmail);
                                 }else{
                                     if(parseInt(userDetails[0].userEmailVerified) === 1){
-                                        callback(null,userDetails,masterUserId,1);
+                                        callback(null,userDetails,masterUserId,1,social_results,checkUserEmail);
                                     }else{
-                                        callback(null,userDetails,masterUserId,0);
+                                        callback(null,userDetails,masterUserId,0,social_results,checkUserEmail);
                                     }
                                 }
                             }else{
@@ -1288,30 +1324,43 @@ User.checkSocialLogin = function(req, res) {
                     }
                 },social_results[0].userID);
             },
-            function(userDetails,masterUserId,actionType, callback) {
-                /* Update user details & device history */ 
-                var dataObj = {};
-                dataObj.userLastLogin     = constant.current_time;
-                dataObj.userLastIpAddress = custom.getUserIp();
-                dataObj.userEmailVerified = 1;
-                model.updateData(function(err,resp){
-                    if(err){
-                        res.send(custom.dbErrorResponse());
-                        return false;
-                    }else{
-                        /* manage device history */
-                        custom.manageUserDeviceHistory(function(respType,deviceResp){
-                            if(parseInt(respType) === 0){
-                                res.send(deviceResp);
-                                return false;
-                            }else{
-                                callback(null,userDetails,actionType);
-                            }
-                        },masterUserId,userDeviceToken,userDeviceType,userDeviceId);
-                    }
-                },constant.user_details,dataObj,{userId:masterUserId});
+            function(userDetails,masterUserId,actionType,socialResults,checkUserEmail, callback) {
+                if(parseInt(actionType) === 1){
+                    /* Update user details & device history */ 
+                    var dataObj = {};
+                    dataObj.userLastLogin     = custom.getCurrentTime();
+                    dataObj.userLastIpAddress = custom.getUserIp();
+                    dataObj.userEmailVerified = 1;
+                    model.updateData(function(err,resp){
+                        if(err){
+                            res.send(custom.dbErrorResponse());
+                            return false;
+                        }else{
+                            /* manage device history */
+                            custom.manageUserDeviceHistory(function(respType,deviceResp){
+                                if(parseInt(respType) === 0){
+                                    res.send(deviceResp);
+                                    return false;
+                                }else{
+                                    callback(null,userDetails,actionType,socialResults,checkUserEmail);
+                                }
+                            },masterUserId,userDeviceToken,userDeviceType,userDeviceId);
+                        }
+                    },constant.user_details,dataObj,{userId:masterUserId});
+                }else{
+                    /* manage device history */
+                    custom.manageUserDeviceHistory(function(respType,deviceResp){
+                        if(parseInt(respType) === 0){
+                            res.send(deviceResp);
+                            return false;
+                        }else{
+                            callback(null,userDetails,actionType,socialResults,checkUserEmail);
+                        }
+                    },masterUserId,userDeviceToken,userDeviceType,userDeviceId);
+                }
+                
             },
-        ], function (err,userDetails,actionType) {
+        ], function (err,userDetails,actionType,socialResults,checkUserEmail) {
             if(parseInt(actionType) === 1){
                 /* Return user response */
                 let user_response = custom.getUserProfileResponse(userDetails);
@@ -1324,24 +1373,25 @@ User.checkSocialLogin = function(req, res) {
                 return false;
             }else{
                 /* Send verification email to user */
-                let getTempCode = constant.temp_code;
+                let getTempCode = custom.generateRandomNo(6);
                 var dataObj = {};
                 dataObj.userTempCode         = getTempCode;
-                dataObj.userTempCodeSentTime = constant.current_time;
+                dataObj.userTempCodeSentTime = custom.getCurrentTime();
                 model.updateData(function(err,resp){
                     if(err){
                         res.send(custom.dbErrorResponse());
                         return false;
                     }else{
+                        console.log('userTempCode',getTempCode);
                         let siteName = constant.site_name;
                         let mailData = {};
-                        mailData.to_email = userEmail;
+                        mailData.to_email = checkUserEmail;
                         mailData.subject  = constant.verification_subject;
                         mailData.message  = custom.verificationMailMsg(userDetails[0].userFirstName,getTempCode);
                         custom.sendEmail(mailData);
                         res.send({
                             "code": 200,
-                            "response": {"userLoginSessionKey":userDetails[0].userLoginSessionKey},
+                            "response": {"userLoginSessionKey":userDetails[0].userLoginSessionKey,userSocialVerificationID:socialResults[0].userSocialVerificationID},
                             "status": 5,
                             "message": "We sent a temporary code on your registered email id, please check your mail inbox."
                         });
@@ -1378,7 +1428,6 @@ User.socialLogin = function(req, res) {
     req.sanitize("userFirstName").trim();
     req.sanitize("userLastName").trim();
     req.sanitize("userEmail").trim();
-    req.sanitize("userPassword").trim(); 
     req.sanitize("userGender").trim();
     req.sanitize("userDOB").trim();
     req.sanitize("userDeviceToken").trim();
@@ -1392,17 +1441,13 @@ User.socialLogin = function(req, res) {
     req.check('userLastName', 'Enter your last name').notEmpty();
     req.check('userEmail', 'Enter your email').notEmpty();
     req.check('userEmail', 'Enter a valid email').isEmail();
-    req.check('userPassword', 'Enter password').notEmpty();
-    req.check('userPassword', 'The Password field must contain at least 6 characters, including UPPER/lower case & numbers & at-least a special character').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/, "i");;
     req.check('userGender', 'Select gender').inList(['MALE', 'FEMALE', 'OTHER']);
     req.check('userDOB', 'Select Date of Birth.').notEmpty();
     req.check('userDeviceToken', 'The user device token field is required').notEmpty();
     req.check('userDeviceType', 'The user device type field is required').notEmpty();
     req.check('userDeviceType', 'The user device type field must be one of ANDROID,IOS').inList(['ANDROID', 'IOS']);
     req.check('userDeviceId', 'The user device id field is required').notEmpty();
-
-    /* To manage email verification or login, if we didn`t recieve email id while social login */
-    req.check('isSocialEmail', 'Social email').inList(["0","1"]);
+    req.check('isSocialEmail', 'Is Social email').inList(["0","1"]);
     var errors = req.validationErrors();
     if (errors) {
         res.send({
@@ -1419,13 +1464,36 @@ User.socialLogin = function(req, res) {
         let userFirstName   = req.sanitize('userFirstName').escape().trim();
         let userLastName    = req.sanitize('userLastName').escape().trim();
         let userEmail       = req.sanitize('userEmail').escape().trim();
-        let userPassword    = req.sanitize('userPassword').escape().trim();
         let userGender      = req.sanitize('userGender').escape().trim();
         let userDOB         = req.sanitize('userDOB').escape().trim();
         let userDeviceToken = req.sanitize('userDeviceToken').escape().trim();
         let userDeviceType  = req.sanitize('userDeviceType').escape().trim();
         let userDeviceId    = req.sanitize('userDeviceId').escape().trim();
         let isSocialEmail   = req.sanitize('isSocialEmail').escape().trim();
+        let isValidDate     = custom.validateDateTime(userDOB,'YYYY-MM-DD');
+        
+        /* Validate date of birth format */
+        if(!isValidDate){
+            return res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": 'Invalid Date of birth format, should be (YYYY-MM-DD)'
+                    });
+        }
+
+        /* Get age from date of birth */
+        let moment     = require('moment');
+        let getUserAge = parseInt(moment().diff(userDOB, 'years'));
+        if(getUserAge < parseInt(constant.min_age_limit))
+        {
+            return res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": 'Your age must be '+constant.min_age_limit+' years old.'
+                    });
+        }
 
         async.waterfall([
             function(callback) {
@@ -1437,86 +1505,609 @@ User.socialLogin = function(req, res) {
                         return false;
                     }else{
                         if(social_results != ""){
-                            callback(null,social_results,1); // found social id
+                            res.send({
+                                "code": 200,
+                                "response": {},
+                                "status": 0,
+                                "message": "Social id already exist."
+                            });
+                            return false;
                         }else{
-                            callback(null,social_results,0); // not found
+
+                            /* Get user email id */
+                            model.getAllWhere(function(err,emailResults){
+                                if(err){
+                                    res.send(custom.dbErrorResponse());
+                                    return false;
+                                }else{
+                                    if(emailResults != ""){
+                                        res.send({
+                                            "code": 200,
+                                            "response": {},
+                                            "status": 0,
+                                            "message": "Email id already exist."
+                                        });
+                                        return false;
+                                    }else{
+                                       model.getAllWhere(function(err,socialEmailResults){
+                                            if(err){
+                                                res.send(custom.dbErrorResponse());
+                                                return false;
+                                            }else{
+                                                if(socialEmailResults != ""){
+                                                    res.send({
+                                                        "code": 200,
+                                                        "response": {},
+                                                        "status": 0,
+                                                        "message": "Email id already exist."
+                                                    });
+                                                    return false;
+                                                }else{
+                                                   callback(null,emailResults,isSocialEmail);
+                                                }
+                                            }
+                                        },constant.user_social_verifications,{userSocialEmailId:userEmail});
+                                    }
+                                }
+                            },constant.users,{userEmail:userEmail});
                         }
                     }
-                },constant.user_social_verifications,{userSocialID:userSocialID});
-
+                },constant.user_social_verifications,{userSocialID:userSocialId});
             },
-            function(social_results,isSocialIdFound, callback) {
-                
-                if(parseInt(isSocialIdFound) === 0){
+            function(emailResults,isSocialEmail, callback) {
 
-                    /* Is email coming from social account ? (0 - No, 1 - Yes) */
-                    if(parseInt(isSocialEmail) === 1){
+                /* Insert data */
+                database.pool.getConnection(function(err, connection) {
 
-                        /* Is email already exist ? */
-                        model.getAllWhere(function(err,email_results){
-                            if(err){
-                                res.send(custom.dbErrorResponse());
-                                return false;
-                            }else{
-                                if(email_results != ""){ // Email exist
+                    /* Begin transaction */
+                    connection.beginTransaction(function(err) {
+                        if (err) {
+                            res.send(custom.dbErrorResponse());
+                            return false;
+                        }
 
-                                    /* Get user details */  
-                                    model.getAllWhere(function(err,details_results){
-                                        if(err){
-                                            res.send(custom.dbErrorResponse());
-                                            return false;
-                                        }else{
-                                            if(details_results != ''){
+                        /* Insert user login data */
+                        let usersObj = {};
+                        usersObj.userEmail = userEmail;
+                        usersObj.userType  = 'NORMAL_USER';
+                        let userQuery = queryBuilder.insert(constant.users,usersObj);
+                        queryBuilder.reset_query(userQuery);
+                        connection.query(userQuery, function(err, result) {
+                            if (err) {
+                                connection.rollback(function() {
+                                    res.send(custom.dbErrorResponse(err.sqlMessage));
+                                    return false;
+                                });
+                            }
 
-                                                /* Check user cases */
-                                                let isAllowed = 0; // not allowed
-                                                let possibleCases = {isUserBlocked,isUserDeactivated};
-                                                for (var i = 0; i < parseInt(possibleCases.length); i++) 
-                                                {
-                                                    let cases = custom.handleUserCases(details_results,possibleCases[i]);
-                                                    if(cases != ""){
-                                                        isAllowed = 0;
-                                                        res.send(cases);
-                                                        return false;
-                                                    }else{
-                                                        isAllowed = 1;
-                                                    }
-                                                }
+                        /* Get master user id */
+                        let masterUserId = result.insertId;
+                        let userLoginSessionKey = masterUserId + custom.getGuid();
+                        var userTempCode = custom.generateRandomNo(6);
 
-                                                /* process user login */
-                                                if(parseInt(isAllowed) === 1)
-                                                {
-                                                    
-                                                }
-                                            }else{
-                                                res.send({
-                                                    "code": 200,
-                                                    "response": {},
-                                                    "status": 0,
-                                                    "message": constant.user_detais_not_found
-                                                });
-                                                return false;
-                                            }
-                                        }
-                                    },constant.user_details,{userId:email_results[0].masterUserId});
+                        /* Insert user details */
+                        let userDetailsObj = {};
+                        userDetailsObj.userId = masterUserId;
+                        userDetailsObj.userFirstName = userFirstName;
+                        userDetailsObj.userLastName = userLastName;
+                        userDetailsObj.userDOB = userDOB;
+                        userDetailsObj.isSocialSignup = 1;
+                        userDetailsObj.userSocialType = userSocialType;
+                        userDetailsObj.userSocialId = userSocialId;
+                        userDetailsObj.userGender = userGender;
+                        userDetailsObj.userLoginSessionKey = userLoginSessionKey;
+                        userDetailsObj.userRegistrationDate = custom.getCurrentTime();
+                        userDetailsObj.userLastIpAddress = custom.getUserIp();
+                        if(parseInt(isSocialEmail) === 0) // If email not get while social login (manual email)
+                        {
+                            userDetailsObj.userTempCode = userTempCode;
+                            userDetailsObj.userTempCodeSentTime = custom.getCurrentTime();
+                        }else{
+                            userDetailsObj.userEmailVerified = 1;
+                            userDetailsObj.noOfVerifiedSocialAccounts = 1;
+                            userDetailsObj.userLastLogin = custom.getCurrentTime();
+                            if(userSocialType == 'FACEBOOK'){
+                                userDetailsObj.isFacebookVerified = 1;
+                            }else if(userSocialType == 'TWITTER'){
+                                userDetailsObj.isTwitterVerified = 1;
+                            }else if(userSocialType == 'INSTAGRAM'){
+                                userDetailsObj.isInstagramVerified = 1;
+                            }
+                        }
+                        let userDetailQuery = queryBuilder.insert(constant.user_details,userDetailsObj);
+                        queryBuilder.reset_query(userDetailQuery);
+                        connection.query(userDetailQuery, function(err, result) {
+                            if (err) {
+                                connection.rollback(function() {
+                                    res.send(custom.dbErrorResponse(err.sqlMessage));
+                                    return;
+                                });
+                            }
 
-                                }else{ // Email not exist
-
+                        /* Manage user devices history */
+                        let user_device_select_query = queryBuilder.get_where(constant.users_device_history,{userDeviceId:userDeviceId});
+                        queryBuilder.reset_query(user_device_select_query);
+                        connection.query(user_device_select_query, function(err, deviceResult) {
+                            if (err) {
+                                connection.rollback(function() {
+                                    res.send(custom.dbErrorResponse(err.sqlMessage));
+                                    return;
+                                });
+                            } else {
+                                let deviceData = {};
+                                deviceData.userId = masterUserId;
+                                deviceData.userDeviceToken = userDeviceToken;
+                                deviceData.userDeviceType  = userDeviceType;
+                                deviceData.deviceModifiedDate = custom.getCurrentTime();
+                                if (deviceResult != '') {
+                                    var user_device_query = queryBuilder.update(constant.users_device_history,deviceData,{userDeviceHistoryId:deviceResult[0].userDeviceHistoryId});
+                                } else {
+                                    deviceData.userDeviceId = userDeviceId;
+                                    deviceData.deviceAddedDate = custom.getCurrentTime();
+                                    var user_device_query   = queryBuilder.insert(constant.users_device_history,deviceData);
                                 }
                             }
-                        },constant.users,{userEmail:userEmail});
-                    }else{
-
-                    }
-                }else{
-
-                }
-            }
-        ], function (err, results) {
+                            queryBuilder.reset_query(user_device_query);
+                            connection.query(user_device_query, function(err, result) {
+                                if (err) {
+                                    connection.rollback(function() {
+                                        res.send(custom.dbErrorResponse(err.sqlMessage));
+                                        return;
+                                    });
+                                }
                         
+                        connection.commit(function(err) {
+                            if (err) {
+                                connection.rollback(function() {
+                                    res.send(custom.dbErrorResponse());
+                                    return;
+                                });
+                            }
+                            connection.release();
+                            callback(null,masterUserId,isSocialEmail,userTempCode);
+                        });
+                        });
+                        });
+                        });
+                        });
+                    });
+                });
+            },
+            function(masterUserId,isSocialEmail,userTempCode, callback) {
+
+                /* Manage user social accunt verification */
+                custom.manageUserSocialVerification(function(respType,resp){
+                    if(parseInt(respType) === 0){
+                        res.send(resp);
+                        return;
+                    }else{
+                        callback(null,masterUserId,isSocialEmail,userTempCode,resp);
+                    }
+                },masterUserId,userSocialId,userEmail,userSocialType,isSocialEmail);
+            }
+        ], function (err,masterUserId,isSocialEmail,userTempCode,userSocialVerificationID) {
+            
+            /* Return user profile response */
+            if(parseInt(isSocialEmail) === 1){
+                custom.getUserProfileDetails(function(respType,jsonResp){
+                    if(parseInt(respType) === 0){
+                        res.send(resp);
+                        return;
+                    }else{
+                        let userProfileResponse = custom.getUserProfileResponse(jsonResp);
+                        res.send({
+                            "code": 200,
+                            "response": userProfileResponse,
+                            "status": 1,
+                            "message": "You have successfully logged in"
+                        });
+                        return;
+                    }
+                },masterUserId);
+            } else{
+                custom.getUserProfileDetails(function(respType,jsonResp){
+                    if(parseInt(respType) === 0){
+                        res.send(resp);
+                        return;
+                    }else{
+                        /* Send verification email to user */
+                        let siteName = constant.site_name;
+                        let mailData = {};
+                        mailData.to_email = jsonResp[0].userEmail;
+                        mailData.subject  = constant.verification_subject;
+                        mailData.message  = custom.verificationMailMsg(jsonResp[0].userFirstName,userTempCode);
+                        custom.sendEmail(mailData);
+                        res.send({
+                            "code": 200,
+                            "response": {"userLoginSessionKey":jsonResp[0].userLoginSessionKey,userSocialVerificationID:userSocialVerificationID},
+                            "status": 5,
+                            "message": "User registered successfully, Please check your registered mail to verify account."
+                        });
+                        return;
+                    }
+                },masterUserId);
+            }
         });
     }
 }
 
+/**
+ * To verify user social account (If email not recieved while social login)
+ * @param {integer} userTempCode
+ * @param {string} userLoginSessionKey
+ * @param {integer} userSocialVerificationID
+*/
 
+User.verifySocialAccount = function(req, res) {
+
+    req.sanitize("userTempCode").trim();
+    req.sanitize("userLoginSessionKey").trim();
+    req.sanitize("userSocialVerificationID").trim();
+    req.check('userTempCode', 'The User verification code is required').notEmpty();
+    req.check('userLoginSessionKey', 'The User login session key field is required').notEmpty();
+    req.check('userSocialVerificationID', 'The User social verification id is required').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        res.send({
+            "code": 200,
+            "response": {},
+            "status": 0,
+            "message": custom.manageValidationMessages(errors)
+        });
+    } else {
+        let userTempCode        = req.sanitize('userTempCode').escape().trim();
+        let userLoginSessionKey = req.sanitize('userLoginSessionKey').escape().trim();
+        let userSocialVerificationID = req.sanitize('userSocialVerificationID').escape().trim();
+
+        async.waterfall([
+            function(callback) {
+
+                /* Get users data */
+                let myQuery = "SELECT * FROM `users` INNER JOIN `user_details` ON `users`.`masterUserId`=`user_details`.`userId` WHERE `user_details`.`userLoginSessionKey` = '"+userLoginSessionKey+"' ";
+                model.customQuery(function(err,userDetails){
+                    if(err){
+                        res.send(custom.dbErrorResponse());
+                        return;
+                    }else{
+                        if(userDetails == ""){
+                            res.send({
+                                "code": 200,
+                                "response": {},
+                                "status": 0,
+                                "message": constant.invalid_login_session_key
+                            });
+                            return;
+                        }else{
+                            if(userTempCode == userDetails[0].userTempCode){
+                                callback(null, userDetails);
+                            }else{
+                                res.send({
+                                    "code": 200,
+                                    "response": {},
+                                    "status": 0,
+                                    "message": constant.invalid_code
+                                }); 
+                                return;
+                            }
+                        }
+                    }
+                },myQuery);
+            },
+            function(results, callback) {
+                if(parseInt(results[0].userEmailVerified) === 1){
+                    res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": constant.already_verified
+                    }); 
+                    return;
+                }else if(parseInt(results[0].isUserBlocked) === 1){
+                    res.send({
+                        "code": 405,
+                        "response": {},
+                        "status": 0,
+                        "message": constant.user_blocked
+                    }); 
+                    return;
+                }else{
+                    callback(null, results,'socialVerification');
+                }
+            }
+        ], function (err, userDetails,verificationType) {
+            
+            /* Get users data */
+            model.getAllWhere(function(err,userSocialAccountDetails){
+                if(err){
+                    res.send(custom.dbErrorResponse());
+                    return;
+                }else{
+                    if(userSocialAccountDetails == ""){
+                        res.send({
+                            "code": 200,
+                            "response": {},
+                            "status": 0,
+                            "message": 'Invalid social verification id.'
+                        }); 
+                        return;
+                    }else{
+                        if(parseInt(userSocialAccountDetails[0].IsVerified === 1)){
+                            res.send({
+                                "code": 200,
+                                "response": {},
+                                "status": 0,
+                                "message": 'Social account already verified.'
+                            }); 
+                            return;
+                        }else{
+                            /* Update data */
+                            database.pool.getConnection(function(err, connection) {
+
+                                /* Begin transaction */
+                                connection.beginTransaction(function(err) {
+                                    if (err) {
+                                        res.send(custom.dbErrorResponse());
+                                        return false;
+                                    }
+
+                                /* Update user email account */
+                                let userUpdateData = {};
+                                userUpdateData.userEmailVerified = 1;
+                                userUpdateData.userTempCode = null;
+                                userUpdateData.userTempCodeSentTime = null;
+                                userUpdateData.userLastLogin = custom.getCurrentTime();
+                                userUpdateData.noOfVerifiedSocialAccounts = parseInt(userDetails[0].noOfVerifiedSocialAccounts) + 1;
+                                if(userDetails[0].userSocialType == 'FACEBOOK'){
+                                    userUpdateData.isFacebookVerified = 1;
+                                }else if(userDetails[0].userSocialType == 'TWITTER'){
+                                    userUpdateData.isTwitterVerified = 1;
+                                }else if(userDetails[0].userSocialType == 'INSTAGRAM'){
+                                    userUpdateData.isInstagramVerified = 1;
+                                }
+                                let userDetailsQuery = queryBuilder.update(constant.user_details,userUpdateData,{userId:userDetails[0].userId});
+                                queryBuilder.reset_query(userDetailsQuery);
+
+                                connection.query(userDetailsQuery, function(err, result) {
+                                if (err) {
+                                    connection.rollback(function() {
+                                        res.send(custom.dbErrorResponse(err.sqlMessage));
+                                        return;
+                                    });
+                                }
+
+                                /* Update user social verification account */
+                                let userSocialUpdateData = {};
+                                userSocialUpdateData.IsVerified = 1;
+                                let userSocialDetailsQuery = queryBuilder.update(constant.user_social_verifications,userSocialUpdateData,{userSocialVerificationID:userSocialVerificationID});
+                                queryBuilder.reset_query(userSocialDetailsQuery);
+
+                                connection.query(userSocialDetailsQuery, function(err, result) {
+                                if (err) {
+                                    connection.rollback(function() {
+                                        res.send(custom.dbErrorResponse(err.sqlMessage));
+                                        return;
+                                    });
+                                }
+
+                                connection.commit(function(err) {
+                                    if (err) {
+                                        connection.rollback(function() {
+                                            res.send(custom.dbErrorResponse());
+                                            return;
+                                        });
+                                    }else{
+                                        connection.release();
+
+                                        /* Return user response */
+                                        let user_response = custom.getUserProfileResponse(userDetails);
+                                        res.send({"code" : 200, "response" : user_response,"status" : 1,"message" : 'Congratulation !! your profile has been successfully verified.'});
+                                        return;
+                                    }
+                                });
+                                });
+                                });
+                                });
+                            });
+                        }
+                    }
+                }
+            },constant.user_social_verifications,{userSocialVerificationID:userSocialVerificationID});
+        });
+    }
+}
+
+/**
+ * To re-send account verification code
+ * @param {string} userLoginSessionKey
+*/
+
+User.resendSocialAccountVerificationCode = function(req, res) {
+
+    req.sanitize("userLoginSessionKey").trim();
+    req.check('userLoginSessionKey', 'The User login session key field is required').notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        res.send({
+            "code": 200,
+            "response": {},
+            "status": 0,
+            "message": custom.manageValidationMessages(errors)
+        });
+    } else {
+        let userLoginSessionKey = req.sanitize('userLoginSessionKey').escape().trim();
+        
+        async.waterfall([
+            function(callback) {
+
+                /* Get user details */
+                let myQuery = "SELECT * FROM `users` INNER JOIN `user_details` ON `users`.`masterUserId`=`user_details`.`userId` WHERE `user_details`.`userLoginSessionKey` = '"+userLoginSessionKey+"' ";
+                model.customQuery(function(err,resp){
+                    if(err){
+                        res.send(custom.dbErrorResponse());
+                        return false;
+                    }else{
+                        if(resp != ""){
+                            if(parseInt(resp[0].userEmailVerified) === 1){
+                                res.send({
+                                    "code": 200,
+                                    "response": {},
+                                    "status": 0,
+                                    "message": constant.already_verified
+                                }); 
+                                return false;
+                            }else if(parseInt(resp[0].isUserBlocked) === 1){
+                                res.send({
+                                    "code": 405,
+                                    "response": {},
+                                    "status": 0,
+                                    "message": constant.user_blocked
+                                }); 
+                                return false;
+                            }else{
+                                let userLastTempCodeSentTime  = resp[0].userTempCodeSentTime;
+                                let currentTime  = custom.getCurrentTime();
+                                let timeDifferece = custom.getDateTimeDifference(userLastTempCodeSentTime,currentTime,'minutes');
+                                if(timeDifferece < constant.resend_code_limit){
+                                    res.send({
+                                        "code": 200,
+                                        "response": {userLoginSessionKey:userLoginSessionKey},
+                                        "status": 0,
+                                        "message": 'Sorry !! you can make new request after '+constant.resend_code_limit+' minutes.'
+                                    });
+                                    return false;
+                                }else{
+                                    callback(null,resp,resp[0].userEmail);
+                                } 
+                            }
+                        }else{
+                            res.send({"code" : 200, "response" : {},"status" : 0,"message" : constant.invalid_login_session_key});
+                            return false;
+                        }
+                    }
+                },myQuery);
+            },
+            function(results,userEmail, callback) {
+                let getTempCode = custom.generateRandomNo(6);    
+
+                /* Update user details */
+                var dataObj = {};
+                dataObj.userTempCode = getTempCode;
+                dataObj.userTempCodeSentTime = custom.getCurrentTime();
+                model.updateData(function(err,resp){
+                    if(err){
+                        res.send(custom.dbErrorResponse());
+                        return false;
+                    }else{
+                        callback(null,results,getTempCode,userEmail);
+                    }
+                },constant.user_details,dataObj,{userId:results[0].userId});
+            }
+        ], function (err, results,getTempCode,userEmail) {
+
+            /* Send verification email to user */
+            let siteName = constant.site_name;
+            let mailData = {};
+            mailData.to_email = userEmail;
+            mailData.subject  = constant.verification_subject;
+            mailData.message  = custom.verificationMailMsg(results[0].userFirstName,getTempCode);
+            custom.sendEmailCallBack(mailData,function(err,resp){
+                if(err){
+                    res.send(custom.mailErrorResponse());
+                    return false;
+                }else{
+                    res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 5,
+                        "message": "Account verification code resent successfully, Please check your registered mail to verify account."
+                    });
+                    return false; 
+                }
+            });
+        });
+    }
+}
+
+/**
+ * To user contact us
+ * @param {string} contactName
+ * @param {string} contactPhone
+ * @param {string} contactEmail
+ * @param {string} contactMessage
+*/
+
+User.contactUs = function(req, res) {
+
+    let locale = req.headers.locale;
+    req.sanitize("contactName").trim();
+    req.sanitize("contactPhone").trim();
+    req.sanitize("contactEmail").trim();
+    req.sanitize("contactMessage").trim();
+    req.check('contactName', custom.lang(locale,'Enter your name')).notEmpty();
+    req.check('contactPhone', custom.lang(locale,'Enter your phone no')).notEmpty();
+    req.check('contactEmail', custom.lang(locale,'Enter your email id')).notEmpty();
+    req.check('contactEmail', custom.lang(locale,'Enter a valid email')).isEmail();
+    req.check('contactMessage', custom.lang(locale,'Enter your message')).notEmpty();
+    let errors = req.validationErrors();
+    if (errors) {
+        res.send({
+            "code": 200,
+            "response": {},
+            "status": 0,
+            "message": custom.manageValidationMessages(errors)
+        });
+    } else {
+        let contactName    = req.sanitize('contactName').escape().trim();
+        let contactPhone   = req.sanitize('contactPhone').escape().trim();
+        let contactEmail   = req.sanitize('contactEmail').escape().trim();
+        let contactMessage = req.sanitize('contactMessage').escape().trim();
+        
+        /* Insert Data */
+        let contactData = {};
+        contactData.contactName     = contactName;
+        contactData.contactPhone    = contactPhone;
+        contactData.contactEmail    = contactEmail;
+        contactData.contactMessage  = contactMessage;
+        contactData.contactDateTime = custom.getCurrentTime();
+        model.insertData(function(err,resp){
+            if(err){
+                return res.send(custom.dbErrorResponse());
+            }else{
+                if(parseInt(resp.affectedRows) > 0){
+
+                    let siteName = constant.site_name;
+                    let mailMessage = '';
+                    mailMessage += 'Hello '+siteName+' Team, <br/><br/>';
+                    mailMessage += 'A user has contact you, please follow below user details. <br/><br/>';
+                    mailMessage += '<strong>Name: </strong>' + contactName + '<br/>';
+                    mailMessage += '<strong>Phone No: </strong>' + contactPhone + '<br/>';
+                    mailMessage += '<strong>Email Id: </strong>' + contactEmail + '<br/>';
+                    mailMessage += '<strong>Message: </strong>' + contactMessage + '<br/><br/>';
+                    mailMessage += 'Thanks';
+
+                    /* Send email to site owner */
+                    let mailData = {};
+                    mailData.to_email = constant.from_email;
+                    mailData.subject  = 'Contact US - Enquiry';
+                    mailData.message  = mailMessage;
+                    custom.sendEmail(mailData);
+                    let SuccessMsg = 'Your enquiry has been sent to ' + siteName + ' team, our team will contact you soon.';
+                    return res.send({
+                                "code": 200,
+                                "response": {},
+                                "status": 1,
+                                "message": custom.lang(locale,SuccessMsg)
+                            });
+                }else{
+                    return res.send({
+                        "code": 200,
+                        "response": {},
+                        "status": 0,
+                        "message": custom.lang(locale,constant.failed_msg)
+                    });
+                }
+            }
+        },constant.contact_us,contactData);
+    }
+}
 

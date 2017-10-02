@@ -334,17 +334,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='For user logins';
 
 INSERT INTO `users` (`masterUserId`, `userEmail`, `userPassword`, `userType`) VALUES
-(5,	'admin@site.com',	'e10adc3949ba59abbe56e057f20f883e',	'SUPER_ADMIN'),
-(37,	'sorav.mobiwebtech12345@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(38,	'sorav.mobiwebtech123@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(39,	'sorav.mobiwebtech1233434@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(40,	'sorav.mobiwebtech4@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(41,	'sorav.mobiwebtech1@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(42,	'sorav.mobiwebtech12@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(43,	'sorav.fdffdfmobiwebtech129@gmail.com',	'34d74d56595bb92d6731d28fcf6065b6',	'NORMAL_USER'),
-(57,	'sorav.mobiwebtech121@gmail.com',	NULL,	'NORMAL_USER'),
-(58,	'sourav@mobiwebtech.com',	NULL,	'NORMAL_USER'),
-(62,	'pintu.kumar.patil@gmail.com',	NULL,	'NORMAL_USER');
+(5,	'admin@site.com',	'e10adc3949ba59abbe56e057f20f883e',	'SUPER_ADMIN');
 
 DROP TABLE IF EXISTS `users_device_history`;
 CREATE TABLE `users_device_history` (
@@ -366,8 +356,6 @@ CREATE TABLE `users_device_history` (
   CONSTRAINT `fk_user_id` FOREIGN KEY (`userId`) REFERENCES `users` (`masterUserId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='To manage user devices history';
 
-INSERT INTO `users_device_history` (`userDeviceHistoryId`, `userId`, `userDeviceToken`, `userDeviceType`, `userDeviceId`, `deviceAddedDate`, `deviceModifiedDate`) VALUES
-(5,	62,	'123-456-789',	'IOS',	'12346789',	'2017-09-20 09:47:19',	'2017-09-20 04:17:19');
 
 DROP TABLE IF EXISTS `user_details`;
 CREATE TABLE `user_details` (
@@ -412,17 +400,6 @@ CREATE TABLE `user_details` (
   CONSTRAINT `user_details_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`masterUserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='To manage user details';
 
-INSERT INTO `user_details` (`userDetailsId`, `userId`, `userFirstName`, `userLastName`, `userAddress`, `userCountry`, `userDOB`, `userLatitude`, `userLongitude`, `userAge`, `userGender`, `userCity`, `userLoginSessionKey`, `isSocialSignup`, `userSocialType`, `userSocialId`, `userImage`, `userImageThumbnail`, `userCoverImage`, `userCoverImageThumbnail`, `isFacebookVerified`, `isTwitterVerified`, `isInstagramVerified`, `noOfVerifiedSocialAccounts`, `userBadges`, `userEmailVerified`, `isUserBlocked`, `isUserDeactivated`, `userTempCode`, `userTempCodeSentTime`, `userRegistrationDate`, `userLastLogin`, `userLastIpAddress`, `userLastActivityDateTime`) VALUES
-(1,	37,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'13f40bad-81c1-4f57-8370-7da191e1400d',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	'426375',	'2017-09-14 08:21:44',	'2017-09-14 08:21:44',	NULL,	'192.168.1.125',	NULL),
-(2,	38,	'Sorav1',	'Garg',	'Tilak Nagar',	'India',	'2017-06-23',	'22.36',	'75.36',	NULL,	'MALE',	'Indore',	'4cb1c6ab-d5c9-e484-d54a-c7fa20db9dbf',	0,	NULL,	NULL,	'uploads/users/user-1505991577308-75942150-da23-ef29-de17-5930165c7494.png',	'uploads/users/user-1505991577308-75942150-da23-ef29-de17-5930165c7494-thumb.png',	NULL,	NULL,	0,	0,	0,	0,	0,	1,	0,	0,	'712161',	'2017-09-19 07:28:51',	'2017-09-14 08:21:44',	'2017-09-20 08:29:20',	'192.168.1.125',	NULL),
-(3,	39,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'bf800235-7e3e-4df4-c88b-4a9e95594194',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	'578700',	'2017-09-14 08:26:43',	'2017-09-14 08:26:43',	NULL,	'192.168.1.125',	NULL),
-(4,	40,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'cc71e265-c352-0452-1c6c-bbf984695ca1',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	'578700',	'2017-09-14 08:26:43',	'2017-09-14 08:26:43',	NULL,	'192.168.1.125',	NULL),
-(5,	41,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'4180d5c889-da2b-4887-9461-d62c812815cd',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	'775917',	'2017-09-14 08:33:06',	'2017-09-14 08:33:06',	NULL,	'192.168.1.125',	NULL),
-(6,	42,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'42f537e22d-3e96-9d3e-a246-71590dc13d8b',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	NULL,	NULL,	'2017-09-14 08:34:02',	NULL,	'192.168.1.125',	NULL),
-(7,	43,	'ffdf',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'43067d317f-c22e-1698-8cab-aea8ba6179e6',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	'179712',	'2017-09-20 06:11:25',	'2017-09-20 06:11:25',	NULL,	'192.168.1.125',	NULL),
-(13,	57,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'57fd7bb3a2-54ee-198b-d9ec-67802338b79f',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	0,	0,	0,	NULL,	NULL,	'2017-09-20 07:11:33',	NULL,	'192.168.1.125',	NULL),
-(14,	58,	'Sorav',	'Garg',	NULL,	NULL,	'2017-06-23',	NULL,	NULL,	NULL,	'MALE',	NULL,	'58ba48dcc2-af9d-6619-bea6-f7daf882954c',	0,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0,	0,	0,	0,	0,	1,	0,	0,	NULL,	NULL,	'2017-09-20 07:11:33',	NULL,	'192.168.1.125',	NULL),
-(18,	62,	'Pintu',	'Patil',	NULL,	NULL,	'2001-09-20',	NULL,	NULL,	NULL,	'MALE',	NULL,	'62019528d0-8871-49ef-3ab9-882d6d5bb574',	1,	'FACEBOOK',	'1459223074143703',	NULL,	NULL,	NULL,	NULL,	1,	0,	0,	0,	0,	1,	0,	0,	NULL,	NULL,	'2017-09-20 09:47:19',	'2017-09-20 09:47:19',	'192.168.1.125',	NULL);
 
 DROP TABLE IF EXISTS `user_gallery_images`;
 CREATE TABLE `user_gallery_images` (
@@ -437,9 +414,6 @@ CREATE TABLE `user_gallery_images` (
   CONSTRAINT `user_gallery_images_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`masterUserId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='To manage user gallery images';
 
-INSERT INTO `user_gallery_images` (`userGalleryImageId`, `userId`, `userOriginalImage`, `userThumbnailImage`, `userGalleryImageCreatedDate`, `userGalleryImageModifiedDate`) VALUES
-(2,	38,	'uploads/gallery/user-1505993579637-0cfb43d3-ccc7-5972-3471-0a1f1093222c.png',	'uploads/gallery/user-1505993579637-0cfb43d3-ccc7-5972-3471-0a1f1093222c-thumb.png',	'2017-09-21 11:32:26',	'2017-09-21 06:02:26'),
-(5,	38,	'uploads/gallery/user-1505996421631-7d253cca-e9f3-c33b-78e5-48fc7c0bec56.png',	'uploads/gallery/user-1505996421631-7d253cca-e9f3-c33b-78e5-48fc7c0bec56-thumb.png',	'2017-09-21 12:19:58',	'2017-09-21 06:49:58');
 
 DROP TABLE IF EXISTS `user_social_verifications`;
 CREATE TABLE `user_social_verifications` (
@@ -457,9 +431,5 @@ CREATE TABLE `user_social_verifications` (
   CONSTRAINT `user_social_verifications_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`masterUserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='To manage user social verification accounts';
 
-INSERT INTO `user_social_verifications` (`userSocialVerificationID`, `userID`, `userSocialID`, `userSocialEmailId`, `userSocialType`, `IsVerified`, `userVerificationDateTime`) VALUES
-(6,	57,	'123-456-789-abjsnk-32-2323',	'sorav.mobiwebtech121@gmail.com',	'FACEBOOK',	1,	'2017-09-20 07:11:33'),
-(7,	58,	'123-456-789-abjsnk-32dsds-2323',	'sourav@mobiwebtech.com',	'FACEBOOK',	1,	'2017-09-20 07:11:33'),
-(11,	62,	'1459223074143703',	'pintu.kumar.patil@gmail.com',	'FACEBOOK',	1,	'2017-09-20 09:47:19');
 
--- 2017-09-23 11:35:46
+-- 2017-09-23 12:43:51

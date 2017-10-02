@@ -59,9 +59,9 @@ var appConstant = function () {
 	this.user_social_verifications = 'user_social_verifications';
 	this.user_gallery_images = 'user_gallery_images';
 	this.content = 'content';
+	this.contact_us = 'contact_us';
 
 	/* Site Options */
-	this.allowed_red_flags   = 3;
 	this.gallery_image_limit = 3;
 	this.min_age_limit       = 16;
 
