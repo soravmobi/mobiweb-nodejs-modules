@@ -318,7 +318,6 @@ UserProfile.uploadUserImage = function(req, res) {
         }
     });
 }
-
 /**
  * To change user password
  * @param {string} userLoginSessionKey
@@ -431,55 +430,6 @@ UserProfile.changePassword = function(req, res) {
 	                    });
 	                });
 				}			
-			}
-		},userLoginSessionKey);
-	}
-}
-
-/**
- * To user logout
- * @param {string} userLoginSessionKey
- * @param {string} userDeviceId
- */
-
-UserProfile.logout = function(req, res) {
-
-	let locale = req.headers.locale;
-	req.sanitize("userLoginSessionKey").trim();
-	req.sanitize("userDeviceId").trim();
-    req.check('userLoginSessionKey', 'The User login session key field is required').notEmpty();
-    req.check('userDeviceId', custom.lang(locale,'Require user device id')).notEmpty();
-    let errors = req.validationErrors();
-    if (errors) {
-        res.send({
-            "code": 200,
-            "response": {},
-            "status": 0,
-            "message": custom.manageValidationMessages(errors)
-        });
-    } else {
-		let userLoginSessionKey = req.sanitize('userLoginSessionKey').escape().trim();
-		let userDeviceId = req.sanitize('userDeviceId').escape().trim();
-
-		/* To validate user login session key */
-		custom.handleLoggedInUser(function(respType,respObj) {
-			if(parseInt(respType) === 0){
-				return res.send(respObj);
-			}else{
-				
-				/* To delete user device id */		
-				model.deleteData(function(err,resp){
-					if(err){
-		                return res.send(custom.dbErrorResponse());
-		            }else{
-		            	return res.send({
-						            "code": 200,
-						            "response": {},
-						            "status": 1,
-						            "message": custom.lang(locale,"User logged-out successfully.")
-						        });
-		            }
-				},constant.users_device_history,{userDeviceId:userDeviceId});
 			}
 		},userLoginSessionKey);
 	}
