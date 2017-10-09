@@ -242,3 +242,35 @@ app.post('/user/change-password', function (req,res) {
 * userLoginSessionKey,oldPassword,newPassword,confirmPassword
 
 ```
+
+#### lib -> notification.js
+
+* Here we are managing Android & IOS mobile app push notification.
+
+### To Send Push Notification
+
+```js
+var appRoot  = require('app-root-path');
+var notification = require(appRoot + '/lib/notification.js');
+
+#### For Android (FCM) :-
+
+notification.sendAndroidNotification(userDeviceToken,userMessage,extraParams);
+
+#### For IOS (APNS) :-
+
+notification.sendIOSNotification(userDeviceToken,userMessage,userBadges,extraParams);
+
+#### For Both Android & IOS (FCM + APNS) :-
+
+notification.sendPushNotifications(userMessage,userId,extraParams);
+
+Note:- sendPushNotifications() method is used to send notification on multiple devices, for example if same user logged in on Android & IOS device then notification will fire on all logged in devices.
+
+```
+
+### Last Activity Management (Session - For Security)
+
+```shell
+Now we are saving user last activity date time in database, if last activity date time is 6 or more then 6 hours old, then session will expired & automatically login session key will changed, a new login session key will allocate for that user. We can also change this session limit from constant file using "session_limit" constant.
+```

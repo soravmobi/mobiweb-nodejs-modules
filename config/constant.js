@@ -13,7 +13,7 @@ var appConstant = function () {
 
 	/* Site Details */
 	this.site_name      = "My Site";
-	this.base_url       = "http://34.209.116.175/";
+	this.base_url       = "http://34.201.111.171/";
 	this.from_email     = "info.mobiweb@gmail.com";
 	this.smtp_username  = "info.mobiweb@gmail.com";
 	this.smtp_password  = "mobiweb";
@@ -24,9 +24,6 @@ var appConstant = function () {
 
 	/* Push Notification */
 	this.fcm_server_key = "AIzaSyDEiGNYzs9FYa9M7L7u6dOTM9vtdukLTJg";
-	this.apns_key_file  = "conf/key.pem";  
-	this.apns_cert_file = "conf/cert.pem";  
-	this.apns_sound     = "default";  
 
 	/* Default Messages */
 	this.general_error = 'Some error occured, please try again.';
@@ -64,6 +61,7 @@ var appConstant = function () {
 	/* Site Options */
 	this.gallery_image_limit = 3;
 	this.min_age_limit       = 16;
+	this.session_limit = 6; // hours
 
 	return this;
 }
